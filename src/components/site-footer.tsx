@@ -14,7 +14,9 @@ export async function SiteFooter() {
     <footer className="mt-24 border-t border-line">
       <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <Img src="/logo.webp" alt="Friktime" className="h-24 w-auto" />
+          {/* Mobile: logo apilado · Desktop: logo con goteo (igual que el header) */}
+          <Img src="/logo-stacked.webp" alt="Friktime" className="h-20 w-auto md:hidden" />
+          <Img src="/logo.webp" alt="Friktime" className="hidden h-24 w-auto md:block" />
           {about?.contactEmail && (
             <a href={`mailto:${about.contactEmail}`} className="mt-4 block text-sm text-muted hover:text-blood">
               {about.contactEmail}
