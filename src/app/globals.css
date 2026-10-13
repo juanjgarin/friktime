@@ -50,3 +50,51 @@ body {
   color: #d4d4d4;
   white-space: pre-line;
 }
+
+/* Splash de entrada: corto y sutil, una vez por sesión (ver components/splash.tsx) */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background);
+  pointer-events: none;
+  animation: splash-out 1.5s ease-in-out forwards;
+}
+.splash img {
+  height: 6rem;
+  width: auto;
+  animation: splash-logo 1.5s ease-out forwards;
+}
+.no-splash .splash {
+  display: none;
+}
+@keyframes splash-out {
+  0%,
+  65% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes splash-logo {
+  0% {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  40%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .splash {
+    display: none;
+  }
+}

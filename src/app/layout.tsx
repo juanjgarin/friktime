@@ -14,7 +14,7 @@ export const viewport: Viewport = { themeColor: "#1a1a1a" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${geist.variable} ${display.variable}`}>
+    <html lang="es" suppressHydrationWarning className={`${geist.variable} ${display.variable}`}>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );
