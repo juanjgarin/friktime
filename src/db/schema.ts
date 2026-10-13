@@ -50,3 +50,14 @@ export const about = pgTable("about", {
 export type Film = typeof films.$inferSelect;
 export type NewsItem = typeof news.$inferSelect;
 export type About = typeof about.$inferSelect;
+
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  body: text("body").notNull(),
+  read: boolean("read").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export type Message = typeof messages.$inferSelect;

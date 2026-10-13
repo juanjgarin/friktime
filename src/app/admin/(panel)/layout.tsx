@@ -9,6 +9,7 @@ const links = [
   { href: "/admin/peliculas", label: "Películas" },
   { href: "/admin/novedades", label: "Novedades" },
   { href: "/admin/nosotros", label: "Nosotros" },
+  { href: "/admin/mensajes", label: "Mensajes" },
 ];
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {

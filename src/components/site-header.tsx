@@ -8,7 +8,10 @@ const left = [
   { href: "/peliculas", label: "Películas" },
   { href: "/novedades", label: "Novedades" },
 ];
-const right = [{ href: "/nosotros", label: "Nosotros" }];
+const right = [
+  { href: "/nosotros", label: "Nosotros" },
+  { href: "/contacto", label: "Contacto" },
+];
 const all = [...left, ...right];
 
 const linkCls = "text-sm font-semibold uppercase tracking-[0.2em] text-white/85 transition hover:text-blood";

@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { auth, requireAdmin, signIn, signOut } from "@/auth";
 import { getDb } from "@/db";
-import { about, films, news } from "@/db/schema";
+import { about, films, messages, news } from "@/db/schema";
 import { slugify } from "@/lib/format";
 
 export type FormState = { error?: string } | undefined;
@@ -156,4 +156,18 @@ export async function saveAbout(_: FormState, formData: FormData): Promise<FormS
     .onConflictDoUpdate({ target: about.id, set: parsed.data });
   refresh();
   return undefined;
+}
+
+/* ---------- Mensajes de contacto ---------- */
+
+export async function setMessageRead(id: number, read: boolean) {
+  await requireAdmin();
+  await getDb().update(messages).set({ read }).where(eq(messages.id, id));
+  revalidatePath("/admin", "layout");
+}
+
+export async function deleteMessage(id: number) {
+  await requireAdmin();
+  await getDb().delete(messages).where(eq(messages.id, id));
+  revalidatePath("/admin", "layout");
 }

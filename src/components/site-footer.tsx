@@ -27,6 +27,9 @@ export async function SiteFooter() {
               {s.label}
             </a>
           ))}
+          <Link href="/contacto" className="hover:text-blood">
+            Contacto
+          </Link>
           <Link href="/admin" className="opacity-40 hover:text-blood hover:opacity-100">
             Admin
           </Link>
