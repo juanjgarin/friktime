@@ -21,7 +21,7 @@ export function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-gradient-to-b from-black/90 via-black/50 to-transparent">
-      <div className="relative mx-auto flex h-20 max-w-7xl items-center justify-center px-4 sm:h-24 sm:px-6">
+      <div className="relative mx-auto flex h-20 max-w-7xl items-center justify-start px-4 sm:h-24 md:justify-center sm:px-6">
         {/* Menú izquierdo (desktop) */}
         <nav className="absolute left-6 hidden items-center gap-8 md:flex">
           {left.map((l) => (
