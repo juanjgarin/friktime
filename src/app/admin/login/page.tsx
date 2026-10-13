@@ -10,7 +10,7 @@ export default async function LoginPage() {
   return (
     <div className="flex min-h-dvh items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <Img src="/logo.webp" alt="Friktime" loading="eager" className="mx-auto mb-8 h-32 w-auto" />
+        <Img src="/logo-stacked.webp" alt="Friktime" loading="eager" className="mx-auto mb-8 h-24 w-auto" />
         <LoginForm />
       </div>
     </div>

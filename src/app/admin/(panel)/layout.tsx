@@ -20,7 +20,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       <header className="border-b border-line">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
           <Link href="/admin">
-            <Img src="/logo.webp" alt="Friktime" loading="eager" className="h-10 w-auto" />
+            <Img src="/logo-stacked.webp" alt="Friktime" loading="eager" className="h-9 w-auto" />
           </Link>
           <nav className="flex flex-1 gap-5 text-xs font-semibold uppercase tracking-widest">
             {links.map((l) => (
