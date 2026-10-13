@@ -41,6 +41,7 @@ export const about = pgTable("about", {
   heading: text("heading").notNull().default("Nosotros"),
   body: text("body").notNull().default(""),
   imageUrl: text("image_url"),
+  contactIntro: text("contact_intro"),
   contactEmail: text("contact_email"),
   instagram: text("instagram"),
   x: text("x"),

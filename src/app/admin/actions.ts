@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { auth, requireAdmin, signIn, signOut } from "@/auth";
+import { requireAdmin, signIn, signOut } from "@/auth";
 import { getDb } from "@/db";
 import { about, films, messages, news } from "@/db/schema";
 import { slugify } from "@/lib/format";
@@ -140,15 +140,37 @@ const aboutSchema = z.object({
   heading: z.string().trim().min(1, "El título es obligatorio"),
   body: z.string().trim(),
   imageUrl: url,
-  contactEmail: optText,
+});
+
+export async function saveAbout(_: FormState, formData: FormData): Promise<FormState> {
+  await requireAdmin();
+  const parsed = aboutSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return fail(parsed.error);
+  await getDb()
+    .insert(about)
+    .values({ id: 1, ...parsed.data })
+    .onConflictDoUpdate({ target: about.id, set: parsed.data });
+  refresh();
+  return undefined;
+}
+
+/* ---------- Contacto (datos de la página y redes) ---------- */
+
+const contactSchema = z.object({
+  contactIntro: optText,
+  contactEmail: z
+    .string()
+    .trim()
+    .refine((v) => v === "" || z.string().email().safeParse(v).success, "Email inválido")
+    .transform((v) => v || null),
   instagram: url,
   x: url,
   youtube: url,
 });
 
-export async function saveAbout(_: FormState, formData: FormData): Promise<FormState> {
-  if (!(await auth())) redirect("/admin/login");
-  const parsed = aboutSchema.safeParse(Object.fromEntries(formData));
+export async function saveContact(_: FormState, formData: FormData): Promise<FormState> {
+  await requireAdmin();
+  const parsed = contactSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return fail(parsed.error);
   await getDb()
     .insert(about)

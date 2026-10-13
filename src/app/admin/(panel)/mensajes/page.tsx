@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { desc } from "drizzle-orm";
 import { getDb } from "@/db";
 import { messages } from "@/db/schema";
@@ -10,7 +11,12 @@ export default async function MessagesAdmin() {
 
   return (
     <>
-      <h1 className="display mb-8 text-4xl">Mensajes</h1>
+      <div className="mb-8 flex items-center justify-between">
+        <h1 className="display text-4xl">Mensajes</h1>
+        <Link href="/admin/contacto" className="text-xs font-bold uppercase tracking-widest text-blood hover:underline">
+          Editar datos de contacto →
+        </Link>
+      </div>
       <ul className="divide-y divide-line border-y border-line">
         {list.length === 0 && <li className="py-6 text-muted">Todavía no hay mensajes.</li>}
         {list.map((m) => (

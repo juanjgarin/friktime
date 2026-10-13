@@ -18,8 +18,9 @@ export default async function ContactPage() {
     <div className="mx-auto grid max-w-6xl gap-12 px-4 pb-12 pt-28 sm:px-6 md:grid-cols-2">
       <div>
         <h1 className="display text-5xl sm:text-7xl">Contacto</h1>
-        <p className="mt-6 max-w-md leading-relaxed text-muted">
-          ¿Querés proponernos un proyecto, hablar de distribución, prensa o simplemente decirnos hola? Escribinos.
+        <p className="mt-6 max-w-md whitespace-pre-line leading-relaxed text-muted">
+          {about?.contactIntro ||
+            "¿Querés proponernos un proyecto, hablar de distribución, prensa o simplemente decirnos hola? Escribinos."}
         </p>
         {about?.contactEmail && (
           <a href={`mailto:${about.contactEmail}`} className="mt-6 block text-lg font-bold text-blood hover:underline">
