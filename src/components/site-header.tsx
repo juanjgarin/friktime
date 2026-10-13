@@ -32,7 +32,9 @@ export function SiteHeader() {
         </nav>
 
         <Link href="/" aria-label="Friktime — inicio" onClick={() => setOpen(false)}>
-          <Img src="/logo.webp" alt="Friktime" loading="eager" className="h-12 w-auto sm:h-[4.5rem]" />
+          {/* Mobile: logo apilado a la izquierda · Desktop: logo con goteo, centrado */}
+          <Img src="/logo-stacked.webp" alt="Friktime" loading="eager" className="h-11 w-auto md:hidden" />
+          <Img src="/logo.webp" alt="Friktime" loading="eager" className="hidden h-[4.5rem] w-auto md:block" />
         </Link>
 
         {/* Menú derecho (desktop) */}
