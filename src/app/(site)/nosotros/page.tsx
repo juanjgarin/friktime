@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Nosotros" };
 export default async function AboutPage() {
   const about = await getAbout();
   return (
-    <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-2">
+    <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-12 pt-28 sm:px-6 md:grid-cols-2">
       <div>
         <h1 className="display text-5xl sm:text-7xl">{about?.heading ?? "Nosotros"}</h1>
         <div className="prose-fk mt-8">

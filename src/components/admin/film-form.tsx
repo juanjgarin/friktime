@@ -37,7 +37,7 @@ export function FilmForm({ film }: { film?: Film }) {
         </Field>
       </div>
       <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="featured" defaultChecked={film?.featured} className="accent-black" />
+        <input type="checkbox" name="featured" defaultChecked={film?.featured} className="accent-[#d90f1a]" />
         Destacar en el carrusel principal del inicio
       </label>
     </ActionForm>

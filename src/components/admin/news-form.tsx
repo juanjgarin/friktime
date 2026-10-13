@@ -23,7 +23,7 @@ export function NewsForm({ item }: { item?: NewsItem }) {
           <input name="publishedAt" type="date" defaultValue={date} className={inputCls} />
         </Field>
         <label className="flex items-center gap-2 self-end pb-2 text-sm">
-          <input type="checkbox" name="published" defaultChecked={item?.published ?? true} className="accent-black" />
+          <input type="checkbox" name="published" defaultChecked={item?.published ?? true} className="accent-[#d90f1a]" />
           Publicada (visible en el sitio)
         </label>
       </div>

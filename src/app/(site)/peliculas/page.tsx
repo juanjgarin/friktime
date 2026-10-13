@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "Películas" };
 export default async function FilmsPage() {
   const films = await getFilms();
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-7xl px-4 pb-12 pt-28 sm:px-6">
       <h1 className="display mb-10 text-5xl sm:text-7xl">Películas</h1>
       {films.length === 0 && <p className="text-muted">Pronto vas a ver acá nuestras películas.</p>}
       <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">

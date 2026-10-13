@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Anton } from "next/font/google";
+import { Lato, Anton } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geist = Lato({ variable: "--font-geist-sans", subsets: ["latin"], weight: ["400", "700", "900"] });
 const display = Anton({ variable: "--font-display", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   icons: { icon: "/logo.webp" },
 };
 
-export const viewport: Viewport = { themeColor: "#d90f1a" };
+export const viewport: Viewport = { themeColor: "#1a1a1a" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

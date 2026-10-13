@@ -44,8 +44,8 @@ export default async function Home() {
 function Section({ title, href, children }: { title: string; href: string; children: React.ReactNode }) {
   return (
     <section className="mx-auto mt-16 max-w-7xl px-4 sm:px-6">
-      <div className="mb-6 flex items-end justify-between border-b border-line pb-3">
-        <h2 className="display text-3xl sm:text-4xl">{title}</h2>
+      <div className="mb-6 flex items-center justify-between border-b border-line pb-3">
+        <h2 className="text-lg font-black uppercase tracking-[0.2em]">{title}</h2>
         <Link href={href} className="text-xs font-semibold uppercase tracking-widest text-muted hover:text-blood">
           Ver todo →
         </Link>

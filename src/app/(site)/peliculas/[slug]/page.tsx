@@ -32,7 +32,9 @@ export default async function FilmPage({ params }: Props) {
           <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
         </div>
       )}
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[300px_1fr]">
+      <div
+        className={`mx-auto grid max-w-6xl gap-10 px-4 pb-12 sm:px-6 md:grid-cols-[300px_1fr] ${film.bannerUrl ? "pt-12" : "pt-28"}`}
+      >
         <div className={film.bannerUrl ? "md:-mt-40" : ""}>
           <div className="relative aspect-[2/3] overflow-hidden rounded bg-zinc-900 shadow-2xl shadow-black">
             {film.posterUrl && <Img src={film.posterUrl} alt={film.title} loading="eager" className="h-full w-full object-cover" />}
@@ -55,7 +57,7 @@ export default async function FilmPage({ params }: Props) {
               href={trailer}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4 inline-block rounded bg-blood px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-zinc-800"
+              className="mt-4 inline-block rounded bg-blood px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-700"
             >
               Ver tráiler
             </a>

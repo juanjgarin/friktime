@@ -4,9 +4,9 @@ import { useActionState, useState, useTransition } from "react";
 import type { FormState } from "@/app/admin/actions";
 
 export const inputCls =
-  "w-full rounded border border-line bg-zinc-950 px-3 py-2 text-sm outline-none focus:border-white";
+  "w-full rounded border border-line bg-zinc-950 px-3 py-2 text-sm outline-none focus:border-blood";
 export const btnCls =
-  "rounded bg-blood px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-white hover:bg-zinc-800 disabled:opacity-50";
+  "rounded bg-blood px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-700 disabled:opacity-50";
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -32,7 +32,7 @@ export function ActionForm({
   return (
     <form action={formAction} className="space-y-5">
       {children}
-      {state?.error && <p className="rounded border border-black bg-black px-3 py-2 text-sm text-white">{state.error}</p>}
+      {state?.error && <p className="rounded border border-blood/60 bg-blood/10 px-3 py-2 text-sm text-red-300">{state.error}</p>}
       <button disabled={pending} className={btnCls}>
         {pending ? "Guardando…" : submitLabel}
       </button>
@@ -84,7 +84,7 @@ export function ImageField({ name, label, defaultValue }: { name: string; label:
               </button>
             )}
           </div>
-          {error && <p className="text-xs text-black">{error}</p>}
+          {error && <p className="text-xs text-red-400">{error}</p>}
         </div>
       </div>
     </div>
@@ -99,7 +99,7 @@ export function DeleteButton({ action, label = "Eliminar" }: { action: () => Pro
         if (!confirm("¿Seguro? Esta acción no se puede deshacer.")) e.preventDefault();
       }}
     >
-      <button className="text-xs font-semibold uppercase tracking-widest text-black underline hover:no-underline">{label}</button>
+      <button className="text-xs font-semibold uppercase tracking-widest text-red-400 hover:text-red-300">{label}</button>
     </form>
   );
 }

@@ -24,7 +24,7 @@ export default async function NewsItemPage({ params }: Props) {
   if (!item) notFound();
 
   return (
-    <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+    <article className="mx-auto max-w-3xl px-4 pb-12 pt-28 sm:px-6">
       <Link href="/novedades" className="text-xs font-semibold uppercase tracking-widest text-muted hover:text-blood">
         ← Novedades
       </Link>

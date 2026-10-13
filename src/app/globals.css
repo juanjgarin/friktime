@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #d90f1a;
+  --background: #1a1a1a;
   --foreground: #ffffff;
-  --muted: rgba(255,255,255,0.78);
-  --line: rgba(0,0,0,0.4);
-  --blood: #000000;
+  --muted: #a3a3a3;
+  --line: #333;
+  --blood: #d90f1a;
 }
 
 @theme inline {
@@ -47,6 +47,6 @@ body {
 .prose-fk p {
   margin-bottom: 1em;
   line-height: 1.7;
-  color: #fff;
+  color: #d4d4d4;
   white-space: pre-line;
 }
