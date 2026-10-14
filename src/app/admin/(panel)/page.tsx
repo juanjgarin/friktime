@@ -11,7 +11,7 @@ export default async function Dashboard() {
     db.select({ c: count() }).from(messages).where(eq(messages.read, false)),
   ]);
   const cards = [
-    { href: "/admin/peliculas", label: "Películas", value: f.c },
+    { href: "/admin/peliculas", label: "Contenido", value: f.c },
     { href: "/admin/novedades", label: "Novedades", value: n.c },
     { href: "/admin/mensajes", label: "Mensajes sin leer", value: m.c },
     { href: "/admin/nosotros", label: "Nosotros", value: "Editar" },

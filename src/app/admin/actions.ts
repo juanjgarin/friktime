@@ -58,6 +58,13 @@ export async function logoutAction() {
 
 /* ---------- Películas ---------- */
 
+const MAX_CLIP_SECONDS = 15;
+const optSeconds = z
+  .string()
+  .trim()
+  .transform((v) => (v === "" ? null : Number(v)))
+  .refine((v) => v === null || (Number.isFinite(v) && v >= 0), "Tramo de video inválido");
+
 const filmSchema = z.object({
   title: z.string().trim().min(1, "El título es obligatorio"),
   tagline: optText,
@@ -65,6 +72,12 @@ const filmSchema = z.object({
   posterUrl: url,
   bannerUrl: url,
   trailerUrl: url,
+  shortUrl: url,
+  teaserUrl: url,
+  backstageUrl: url,
+  videoUrl: url,
+  videoStart: optSeconds,
+  videoEnd: optSeconds,
   year: z
     .string()
     .trim()
@@ -82,7 +95,15 @@ export async function saveFilm(id: number | null, _: FormState, formData: FormDa
   await requireAdmin();
   const parsed = filmSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return fail(parsed.error);
-  const values = { ...parsed.data, featured: formData.get("featured") === "on" };
+  const { videoStart, videoEnd, ...film } = parsed.data;
+  // Tramo válido solo si hay video y ambos extremos; si no, se reproduce entero.
+  const clip = film.videoUrl && videoStart !== null && videoEnd !== null ? { videoStart, videoEnd } : { videoStart: null, videoEnd: null };
+  if (clip.videoStart !== null && clip.videoEnd !== null) {
+    if (clip.videoEnd <= clip.videoStart) return { error: "El fin del tramo debe ser posterior al inicio" };
+    if (clip.videoEnd - clip.videoStart > MAX_CLIP_SECONDS)
+      return { error: `El tramo del video no puede superar ${MAX_CLIP_SECONDS} segundos` };
+  }
+  const values = { ...film, ...clip, featured: formData.get("featured") === "on" };
   const db = getDb();
 
   if (id) await db.update(films).set(values).where(eq(films.id, id));

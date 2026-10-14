@@ -12,14 +12,14 @@ export default async function FilmsAdmin({ searchParams }: { searchParams: Promi
   return (
     <>
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="display text-3xl sm:text-4xl">Películas</h1>
+        <h1 className="display text-3xl sm:text-4xl">Contenido</h1>
         <Link href="/admin/peliculas/nuevo" className={btnCls}>
-          + Nueva
+          + Nuevo
         </Link>
       </div>
       <ArchiveFilter href="/admin/peliculas" showAll={showAll} />
       <ul className="divide-y divide-line border-y border-line">
-        {list.length === 0 && <li className="py-6 text-muted">Todavía no cargaste películas.</li>}
+        {list.length === 0 && <li className="py-6 text-muted">Todavía no cargaste contenido.</li>}
         {list.map((f) => (
           <li key={f.id} className={f.archived ? "opacity-60" : ""}>
             <Link href={`/admin/peliculas/${f.id}`} className="flex items-center gap-4 py-3 hover:bg-white/5">

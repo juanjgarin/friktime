@@ -7,7 +7,7 @@ const display = Anton({ variable: "--font-display", subsets: ["latin"], weight: 
 
 export const metadata: Metadata = {
   title: { default: "Friktime — Productora de cine de terror", template: "%s · Friktime" },
-  description: "Friktime es una productora de cine de terror. Películas, novedades y más.",
+  description: "Friktime es una productora de cine de terror. Contenido, novedades y más.",
 };
 
 export const viewport: Viewport = { themeColor: "#1a1a1a" };

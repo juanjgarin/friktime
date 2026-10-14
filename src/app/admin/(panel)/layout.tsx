@@ -6,7 +6,7 @@ import { getLogoUrl } from "@/lib/queries";
 export const metadata = { title: "Panel", robots: { index: false } };
 
 const links = [
-  { href: "/admin/peliculas", label: "Películas" },
+  { href: "/admin/peliculas", label: "Contenido" },
   { href: "/admin/novedades", label: "Novedades" },
   { href: "/admin/nosotros", label: "Nosotros" },
   { href: "/admin/contacto", label: "Contacto" },

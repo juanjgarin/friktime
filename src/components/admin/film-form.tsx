@@ -3,6 +3,7 @@
 import { saveFilm } from "@/app/admin/actions";
 import type { Film } from "@/db/schema";
 import { ActionForm, Field, ImageField, inputCls } from "./ui";
+import { VideoField } from "./video-field";
 
 export function FilmForm({ film }: { film?: Film }) {
   return (
@@ -18,9 +19,30 @@ export function FilmForm({ film }: { film?: Film }) {
       </Field>
       <ImageField name="posterUrl" label="Portada (vertical, 2:3)" defaultValue={film?.posterUrl} aspect="2:3" />
       <ImageField name="bannerUrl" label="Banner (horizontal, opcional — se usa en el carrusel principal)" defaultValue={film?.bannerUrl} aspect="16:9" />
-      <Field label="URL del tráiler">
-        <input name="trailerUrl" defaultValue={film?.trailerUrl ?? ""} placeholder="https://youtube.com/…" className={inputCls} />
-      </Field>
+      <VideoField
+        name="videoUrl"
+        startName="videoStart"
+        endName="videoEnd"
+        label="Video corto en loop (opcional — se muestra en el carrusel principal)"
+        defaultValue={film?.videoUrl}
+        defaultStart={film?.videoStart}
+        defaultEnd={film?.videoEnd}
+      />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Short (URL)" hint="Botón «Ver short»">
+          <input name="shortUrl" defaultValue={film?.shortUrl ?? ""} placeholder="https://instagram.com/reel/…" className={inputCls} />
+        </Field>
+        <Field label="Tráiler (URL)" hint="Botón «Ver tráiler»">
+          <input name="trailerUrl" defaultValue={film?.trailerUrl ?? ""} placeholder="https://youtube.com/…" className={inputCls} />
+        </Field>
+        <Field label="Adelanto (URL)" hint="Botón «Ver adelanto»">
+          <input name="teaserUrl" defaultValue={film?.teaserUrl ?? ""} placeholder="https://…" className={inputCls} />
+        </Field>
+        <Field label="Backstage (URL)" hint="Botón «Ver backstage»">
+          <input name="backstageUrl" defaultValue={film?.backstageUrl ?? ""} placeholder="https://…" className={inputCls} />
+        </Field>
+      </div>
+      <p className="-mt-3 text-xs text-muted">Los botones solo aparecen si cargás el link. «Más info» siempre está.</p>
       <div className="grid gap-5 sm:grid-cols-3">
         <Field label="Año">
           <input name="year" type="number" defaultValue={film?.year ?? ""} className={inputCls} />

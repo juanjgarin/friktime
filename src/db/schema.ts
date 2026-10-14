@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, real, serial, text, timestamp } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -16,10 +16,18 @@ export const films = pgTable("films", {
   posterUrl: text("poster_url"),
   bannerUrl: text("banner_url"),
   trailerUrl: text("trailer_url"),
+  shortUrl: text("short_url"),
+  teaserUrl: text("teaser_url"),
+  backstageUrl: text("backstage_url"),
   year: integer("year"),
   // released | upcoming | production
   status: text("status").notNull().default("upcoming"),
   featured: boolean("featured").notNull().default(false),
+  // Short vertical (≤10 s) que se reproduce en loop en el carrusel principal.
+  videoUrl: text("video_url"),
+  // Tramo (en segundos) que se reproduce en loop; null = el video entero.
+  videoStart: real("video_start"),
+  videoEnd: real("video_end"),
   archived: boolean("archived").notNull().default(false),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),

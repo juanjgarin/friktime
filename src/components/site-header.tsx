@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Img } from "./img";
 
 const left = [
-  { href: "/peliculas", label: "Películas" },
+  { href: "/peliculas", label: "Contenido" },
   { href: "/novedades", label: "Novedades" },
 ];
 const right = [

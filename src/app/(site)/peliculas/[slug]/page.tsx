@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Img } from "@/components/img";
 import { getFilmBySlug } from "@/lib/queries";
 import { statusLabels } from "@/lib/labels";
-import { safeUrl } from "@/lib/format";
+import { filmLinks } from "@/lib/format";
 
 export const revalidate = 60;
 
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function FilmPage({ params }: Props) {
   const film = await getFilmBySlug((await params).slug);
   if (!film) notFound();
-  const trailer = safeUrl(film.trailerUrl);
+  const links = filmLinks(film);
 
   return (
     <article>
@@ -52,15 +52,22 @@ export default async function FilmPage({ params }: Props) {
               <p>{film.synopsis}</p>
             </div>
           )}
-          {trailer && (
-            <a
-              href={trailer}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-block rounded bg-blood px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-red-700"
-            >
-              Ver tráiler
-            </a>
+          {links.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-3">
+              {links.map((l, i) => (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`rounded px-6 py-3 text-xs font-bold uppercase tracking-widest transition ${
+                    i === 0 ? "bg-blood text-white hover:bg-red-700" : "border border-white/30 hover:border-white"
+                  }`}
+                >
+                  {l.label}
+                </a>
+              ))}
+            </div>
           )}
         </div>
       </div>

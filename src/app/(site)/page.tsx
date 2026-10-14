@@ -23,7 +23,7 @@ export default async function Home() {
       )}
 
       {films.length > 0 && (
-        <Section title="Películas" href="/peliculas">
+        <Section title="Contenido" href="/peliculas">
           <PosterCarousel films={films} />
         </Section>
       )}

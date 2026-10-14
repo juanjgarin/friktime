@@ -51,3 +51,18 @@ export function socialLinks(
 }
 
 export const phoneHref = (p: string) => `tel:${p.replace(/[^\d+]/g, "")}`;
+
+/** Enlaces opcionales de una película, en el orden en que se muestran. Solo los que tienen URL. */
+export function filmLinks(f: {
+  shortUrl?: string | null;
+  trailerUrl?: string | null;
+  teaserUrl?: string | null;
+  backstageUrl?: string | null;
+}): { label: string; href: string }[] {
+  return [
+    { label: "Ver short", href: safeUrl(f.shortUrl) },
+    { label: "Ver tráiler", href: safeUrl(f.trailerUrl) },
+    { label: "Ver adelanto", href: safeUrl(f.teaserUrl) },
+    { label: "Ver backstage", href: safeUrl(f.backstageUrl) },
+  ].filter((l): l is { label: string; href: string } => !!l.href);
+}

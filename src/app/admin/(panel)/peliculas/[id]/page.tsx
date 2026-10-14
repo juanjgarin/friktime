@@ -11,7 +11,7 @@ export default async function EditFilm({ params }: { params: Promise<{ id: strin
   if (id === "nuevo")
     return (
       <>
-        <h1 className="display mb-8 text-3xl sm:text-4xl">Nueva película</h1>
+        <h1 className="display mb-8 text-3xl sm:text-4xl">Nuevo contenido</h1>
         <FilmForm />
       </>
     );
