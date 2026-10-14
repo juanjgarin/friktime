@@ -20,6 +20,7 @@ export const films = pgTable("films", {
   // released | upcoming | production
   status: text("status").notNull().default("upcoming"),
   featured: boolean("featured").notNull().default(false),
+  archived: boolean("archived").notNull().default(false),
   sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -32,6 +33,7 @@ export const news = pgTable("news", {
   body: text("body").notNull().default(""),
   imageUrl: text("image_url"),
   published: boolean("published").notNull().default(true),
+  archived: boolean("archived").notNull().default(false),
   publishedAt: timestamp("published_at").notNull().defaultNow(),
 });
 
@@ -41,13 +43,31 @@ export const about = pgTable("about", {
   heading: text("heading").notNull().default("Nosotros"),
   body: text("body").notNull().default(""),
   imageUrl: text("image_url"),
+  logoUrl: text("logo_url"),
   contactIntro: text("contact_intro"),
   contactEmail: text("contact_email"),
   instagram: text("instagram"),
   x: text("x"),
   youtube: text("youtube"),
+  // Listas (se pueden cargar varios). Reemplazan a contactEmail/instagram/x/youtube, que quedan solo por compatibilidad.
+  contactEmails: text("contact_emails").array().notNull().default([]),
+  phones: text("phones").array().notNull().default([]),
+  instagramUrls: text("instagram_urls").array().notNull().default([]),
+  xUrls: text("x_urls").array().notNull().default([]),
+  youtubeUrls: text("youtube_urls").array().notNull().default([]),
 });
 
+// Equipo de la página "Nosotros"
+export const members = pgTable("members", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  role: text("role").notNull().default(""),
+  photoUrl: text("photo_url"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export type Member = typeof members.$inferSelect;
 export type Film = typeof films.$inferSelect;
 export type NewsItem = typeof news.$inferSelect;
 export type About = typeof about.$inferSelect;

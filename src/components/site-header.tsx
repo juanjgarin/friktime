@@ -16,7 +16,7 @@ const all = [...left, ...right];
 
 const linkCls = "text-sm font-semibold uppercase tracking-[0.2em] text-white/85 transition hover:text-blood";
 
-export function SiteHeader() {
+export function SiteHeader({ logo }: { logo: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -32,7 +32,7 @@ export function SiteHeader() {
         </nav>
 
         <Link href="/" aria-label="Friktime — inicio" onClick={() => setOpen(false)}>
-          <Img src="/logo-stacked.webp" alt="Friktime" loading="eager" className="h-11 w-auto md:h-14" />
+          <Img src={logo} alt="Friktime" loading="eager" className="h-11 w-auto md:h-14" />
         </Link>
 
         {/* Menú derecho (desktop) */}

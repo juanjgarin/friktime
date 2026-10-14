@@ -1,13 +1,13 @@
 "use server";
 
 import { AuthError } from "next-auth";
-import { eq } from "drizzle-orm";
+import { asc, eq, max } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin, signIn, signOut } from "@/auth";
 import { getDb } from "@/db";
-import { about, films, messages, news } from "@/db/schema";
+import { about, films, members, messages, news } from "@/db/schema";
 import { slugify } from "@/lib/format";
 
 export type FormState = { error?: string } | undefined;
@@ -99,6 +99,13 @@ export async function deleteFilm(id: number) {
   redirect("/admin/peliculas");
 }
 
+export async function setFilmArchived(id: number, archived: boolean) {
+  await requireAdmin();
+  await getDb().update(films).set({ archived }).where(eq(films.id, id));
+  refresh();
+  redirect("/admin/peliculas");
+}
+
 /* ---------- Novedades ---------- */
 
 const newsSchema = z.object({
@@ -134,6 +141,13 @@ export async function deleteNews(id: number) {
   redirect("/admin/novedades");
 }
 
+export async function setNewsArchived(id: number, archived: boolean) {
+  await requireAdmin();
+  await getDb().update(news).set({ archived }).where(eq(news.id, id));
+  refresh();
+  redirect("/admin/novedades");
+}
+
 /* ---------- Nosotros ---------- */
 
 const aboutSchema = z.object({
@@ -156,21 +170,86 @@ export async function saveAbout(_: FormState, formData: FormData): Promise<FormS
 
 /* ---------- Contacto (datos de la página y redes) ---------- */
 
-const contactSchema = z.object({
-  contactIntro: optText,
-  contactEmail: z
-    .string()
-    .trim()
-    .refine((v) => v === "" || z.string().email().safeParse(v).success, "Email inválido")
-    .transform((v) => v || null),
-  instagram: url,
-  x: url,
-  youtube: url,
-});
+/** Valores repetidos del formulario (un input por valor): sin vacíos ni duplicados. */
+const values = (fd: FormData, name: string) => [
+  ...new Set(fd.getAll(name).map((v) => String(v).trim()).filter(Boolean)),
+];
 
 export async function saveContact(_: FormState, formData: FormData): Promise<FormState> {
   await requireAdmin();
-  const parsed = contactSchema.safeParse(Object.fromEntries(formData));
+  const lists = {
+    contactEmails: values(formData, "contactEmails"),
+    phones: values(formData, "phones"),
+    instagramUrls: values(formData, "instagramUrls"),
+    xUrls: values(formData, "xUrls"),
+    youtubeUrls: values(formData, "youtubeUrls"),
+  };
+
+  const badEmail = lists.contactEmails.find((e) => !z.string().email().safeParse(e).success);
+  if (badEmail) return { error: `Email inválido: ${badEmail}` };
+  const badPhone = lists.phones.find((p) => !/^\+?[\d\s().-]{6,}$/.test(p));
+  if (badPhone) return { error: `Teléfono inválido: ${badPhone}` };
+  const badUrl = [...lists.instagramUrls, ...lists.xUrls, ...lists.youtubeUrls].find((u) => !/^https?:\/\//i.test(u));
+  if (badUrl) return { error: `La URL debe empezar con http:// o https://: ${badUrl}` };
+
+  const data = { contactIntro: String(formData.get("contactIntro") ?? "").trim() || null, ...lists };
+  await getDb()
+    .insert(about)
+    .values({ id: 1, ...data })
+    .onConflictDoUpdate({ target: about.id, set: data });
+  refresh();
+  return undefined;
+}
+
+/* ---------- Equipo ---------- */
+
+const memberSchema = z.object({
+  name: z.string().trim().min(1, "El nombre es obligatorio"),
+  role: z.string().trim(),
+  photoUrl: url,
+});
+
+export async function saveMember(id: number | null, _: FormState, formData: FormData): Promise<FormState> {
+  await requireAdmin();
+  const parsed = memberSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return fail(parsed.error);
+  const db = getDb();
+
+  if (id) await db.update(members).set(parsed.data).where(eq(members.id, id));
+  else {
+    const [{ m }] = await db.select({ m: max(members.sortOrder) }).from(members);
+    await db.insert(members).values({ ...parsed.data, sortOrder: (m ?? -1) + 1 });
+  }
+
+  refresh();
+  redirect("/admin/nosotros");
+}
+
+export async function deleteMember(id: number) {
+  await requireAdmin();
+  await getDb().delete(members).where(eq(members.id, id));
+  refresh();
+  redirect("/admin/nosotros");
+}
+
+/** Sube o baja un miembro un lugar; renumera todo para que el orden siempre sea consistente. */
+export async function moveMember(id: number, dir: -1 | 1) {
+  await requireAdmin();
+  const db = getDb();
+  const list = await db.select({ id: members.id }).from(members).orderBy(asc(members.sortOrder), asc(members.id));
+  const i = list.findIndex((m) => m.id === id);
+  const j = i + dir;
+  if (i < 0 || j < 0 || j >= list.length) return;
+  [list[i], list[j]] = [list[j], list[i]];
+  await Promise.all(list.map((m, idx) => db.update(members).set({ sortOrder: idx }).where(eq(members.id, m.id))));
+  refresh();
+}
+
+/* ---------- Logo ---------- */
+
+export async function saveLogo(_: FormState, formData: FormData): Promise<FormState> {
+  await requireAdmin();
+  const parsed = z.object({ logoUrl: url }).safeParse(Object.fromEntries(formData));
   if (!parsed.success) return fail(parsed.error);
   await getDb()
     .insert(about)

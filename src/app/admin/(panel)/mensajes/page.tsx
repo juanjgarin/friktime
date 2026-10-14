@@ -11,8 +11,8 @@ export default async function MessagesAdmin() {
 
   return (
     <>
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="display text-4xl">Mensajes</h1>
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="display text-3xl sm:text-4xl">Mensajes</h1>
         <Link href="/admin/contacto" className="text-xs font-bold uppercase tracking-widest text-blood hover:underline">
           Editar datos de contacto →
         </Link>
@@ -22,14 +22,14 @@ export default async function MessagesAdmin() {
         {list.map((m) => (
           <li key={m.id} className="py-4">
             <details>
-              <summary className="flex cursor-pointer items-center gap-3">
+              <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1">
                 {!m.read && <span className="h-2.5 w-2.5 rounded-full bg-blood" aria-label="No leído" />}
                 <span className={m.read ? "text-muted" : "font-bold"}>{m.name}</span>
-                <span className="text-xs text-muted">{m.email}</span>
-                <span className="ml-auto text-xs text-muted">{fmt.format(m.createdAt)}</span>
+                <span className="break-all text-xs text-muted">{m.email}</span>
+                <span className="w-full text-xs text-muted sm:ml-auto sm:w-auto">{fmt.format(m.createdAt)}</span>
               </summary>
               <p className="mt-4 whitespace-pre-line text-sm text-foreground/90">{m.body}</p>
-              <div className="mt-4 flex items-center gap-6">
+              <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
                 <a href={`mailto:${m.email}`} className="text-xs font-bold uppercase tracking-widest text-blood hover:underline">
                   Responder
                 </a>

@@ -12,8 +12,8 @@ export default async function ContactAdmin() {
   ]);
   return (
     <>
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="display text-4xl">Contacto</h1>
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="display text-3xl sm:text-4xl">Contacto</h1>
         <Link href="/admin/mensajes" className="text-xs font-bold uppercase tracking-widest text-blood hover:underline">
           Ver mensajes recibidos{unread.c > 0 ? ` (${unread.c} sin leer)` : ""} →
         </Link>

@@ -128,10 +128,10 @@ async function main() {
     heading: "Nosotros",
     body: aboutBody,
     imageUrl: img("about", 1200, 900),
-    contactEmail: "contacto@friktime.com",
-    instagram: "https://instagram.com/",
-    x: "https://x.com/",
-    youtube: "https://youtube.com/",
+    contactEmails: ["contacto@friktime.com"],
+    instagramUrls: ["https://instagram.com/"],
+    xUrls: ["https://x.com/"],
+    youtubeUrls: ["https://youtube.com/"],
   };
   await db.insert(about).values({ id: 1, ...set }).onConflictDoUpdate({ target: about.id, set });
 

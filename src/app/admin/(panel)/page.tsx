@@ -16,13 +16,14 @@ export default async function Dashboard() {
     { href: "/admin/mensajes", label: "Mensajes sin leer", value: m.c },
     { href: "/admin/nosotros", label: "Nosotros", value: "Editar" },
     { href: "/admin/contacto", label: "Contacto", value: "Editar" },
+    { href: "/admin/logo", label: "Logo", value: "Editar" },
   ];
   return (
     <>
-      <h1 className="display mb-8 text-4xl">Panel</h1>
+      <h1 className="display mb-8 text-3xl sm:text-4xl">Panel</h1>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
-          <Link key={c.href} href={c.href} className="rounded border border-line p-6 transition hover:border-blood">
+          <Link key={c.href} href={c.href} className="rounded border border-line p-5 transition sm:p-6 hover:border-blood">
             <p className="text-xs uppercase tracking-widest text-muted">{c.label}</p>
             <p className="display mt-2 text-5xl">{c.value}</p>
           </Link>

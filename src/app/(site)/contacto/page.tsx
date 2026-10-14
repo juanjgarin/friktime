@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getAbout } from "@/lib/queries";
-import { safeUrl } from "@/lib/format";
+import { phoneHref, socialLinks } from "@/lib/format";
 import { ContactForm } from "./contact-form";
 
 export const revalidate = 60;
@@ -8,11 +8,7 @@ export const metadata: Metadata = { title: "Contacto" };
 
 export default async function ContactPage() {
   const about = await getAbout();
-  const socials = [
-    { label: "Instagram", href: safeUrl(about?.instagram) },
-    { label: "X", href: safeUrl(about?.x) },
-    { label: "YouTube", href: safeUrl(about?.youtube) },
-  ].filter((s) => s.href);
+  const socials = socialLinks(about);
 
   return (
     <div className="mx-auto grid max-w-6xl gap-12 px-4 pb-12 pt-28 sm:px-6 md:grid-cols-2">
@@ -22,15 +18,24 @@ export default async function ContactPage() {
           {about?.contactIntro ||
             "¿Querés proponernos un proyecto, hablar de distribución, prensa o simplemente decirnos hola? Escribinos."}
         </p>
-        {about?.contactEmail && (
-          <a href={`mailto:${about.contactEmail}`} className="mt-6 block text-lg font-bold text-blood hover:underline">
-            {about.contactEmail}
-          </a>
-        )}
+        {(about?.contactEmails.length || about?.phones.length) ? (
+          <div className="mt-6 space-y-1 text-lg font-bold text-blood">
+            {about.contactEmails.map((e) => (
+              <a key={e} href={`mailto:${e}`} className="block hover:underline">
+                {e}
+              </a>
+            ))}
+            {about.phones.map((p) => (
+              <a key={p} href={phoneHref(p)} className="block hover:underline">
+                {p}
+              </a>
+            ))}
+          </div>
+        ) : null}
         {socials.length > 0 && (
           <div className="mt-8 flex flex-wrap gap-6 text-xs font-bold uppercase tracking-widest">
             {socials.map((s) => (
-              <a key={s.label} href={s.href!} target="_blank" rel="noopener noreferrer" className="hover:text-blood">
+              <a key={s.href} href={s.href} target="_blank" rel="noopener noreferrer" className="hover:text-blood">
                 {s.label}
               </a>
             ))}

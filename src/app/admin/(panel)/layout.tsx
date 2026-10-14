@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { logoutAction } from "../actions";
 import { requireAdmin } from "@/auth";
-import { Img } from "@/components/img";
+import { AdminHeader } from "@/components/admin/admin-header";
+import { getLogoUrl } from "@/lib/queries";
 
 export const metadata = { title: "Panel", robots: { index: false } };
 
@@ -10,6 +10,7 @@ const links = [
   { href: "/admin/novedades", label: "Novedades" },
   { href: "/admin/nosotros", label: "Nosotros" },
   { href: "/admin/contacto", label: "Contacto" },
+  { href: "/admin/logo", label: "Logo" },
   { href: "/admin/mensajes", label: "Mensajes" },
 ];
 
@@ -17,27 +18,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const session = await requireAdmin();
   return (
     <>
-      <header className="border-b border-line">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
-          <Link href="/admin">
-            <Img src="/logo-stacked.webp" alt="Friktime" loading="eager" className="h-9 w-auto" />
-          </Link>
-          <nav className="flex flex-1 gap-5 text-xs font-semibold uppercase tracking-widest">
-            {links.map((l) => (
-              <Link key={l.href} href={l.href} className="hover:text-blood">
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-          <Link href="/" target="_blank" className="text-xs text-muted hover:text-blood">
-            Ver sitio ↗
-          </Link>
-          <form action={logoutAction} className="flex items-center gap-3">
-            <span className="hidden text-xs text-muted sm:inline">{session.user?.email}</span>
-            <button className="text-xs font-semibold uppercase tracking-widest text-muted hover:text-blood">Salir</button>
-          </form>
-        </div>
-      </header>
+      <AdminHeader logo={await getLogoUrl()} links={links} email={session.user?.email} logoutAction={logoutAction} />
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">{children}</div>
     </>
   );

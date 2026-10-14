@@ -17,7 +17,7 @@ export function NewsForm({ item }: { item?: NewsItem }) {
       <Field label="Contenido *">
         <textarea name="body" rows={12} required defaultValue={item?.body} className={inputCls} />
       </Field>
-      <ImageField name="imageUrl" label="Imagen" defaultValue={item?.imageUrl} />
+      <ImageField name="imageUrl" label="Imagen" defaultValue={item?.imageUrl} aspect="16:9" />
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Fecha de publicación">
           <input name="publishedAt" type="date" defaultValue={date} className={inputCls} />

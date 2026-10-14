@@ -16,8 +16,8 @@ export function FilmForm({ film }: { film?: Film }) {
       <Field label="Sinopsis">
         <textarea name="synopsis" rows={6} defaultValue={film?.synopsis ?? ""} className={inputCls} />
       </Field>
-      <ImageField name="posterUrl" label="Portada (vertical, 2:3)" defaultValue={film?.posterUrl} />
-      <ImageField name="bannerUrl" label="Banner (horizontal, opcional — se usa en el carrusel principal)" defaultValue={film?.bannerUrl} />
+      <ImageField name="posterUrl" label="Portada (vertical, 2:3)" defaultValue={film?.posterUrl} aspect="2:3" />
+      <ImageField name="bannerUrl" label="Banner (horizontal, opcional — se usa en el carrusel principal)" defaultValue={film?.bannerUrl} aspect="16:9" />
       <Field label="URL del tráiler">
         <input name="trailerUrl" defaultValue={film?.trailerUrl ?? ""} placeholder="https://youtube.com/…" className={inputCls} />
       </Field>
