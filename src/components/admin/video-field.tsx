@@ -6,15 +6,18 @@ import { useClipLoop } from "@/lib/use-clip-loop";
 import { inputCls } from "./ui";
 
 const MAX_MB = 30;
-const MAX_CLIP = 10; // segundos
+const MAX_UPLOAD = 15; // segundos: lo máximo que se puede subir
+const MAX_CLIP = 10; // segundos: lo máximo que se muestra (el tramo elegido)
 const MIN_CLIP = 0.5;
-const RECOMMENDED_MAX = 20; // segundos: más que esto pesa de más aunque solo se muestre un tramo
+const TOLERANCE = 0.05; // los decimales de la duración no deben rechazar un video de "15 s"
 const TYPES = ["video/mp4", "video/webm"];
 
 type Range = { start: number; end: number };
 const sec = (n: number) => `${n.toFixed(1)} s`;
+const tooLongMessage = (d: number) =>
+  `El video dura ${sec(d)} y el máximo para subir es ${MAX_UPLOAD} segundos. Recortalo antes de subirlo.`;
 
-/** Duración de un archivo local, para avisar antes de subirlo. null si el navegador no puede leerla. */
+/** Duración de un archivo local, para validarla antes de subirlo. null si el navegador no puede leerla. */
 function readDuration(file: File) {
   return new Promise<number | null>((resolve) => {
     const url = URL.createObjectURL(file);
@@ -31,8 +34,8 @@ function readDuration(file: File) {
 }
 
 /**
- * Subida directa de video (Vercel Blob) o URL a mano, con recorte "virtual": se elige el tramo (máx. 10 s)
- * y el sitio reproduce solo ese tramo en loop. El archivo no se modifica, así que el tramo se puede reajustar.
+ * Subida directa de video (Vercel Blob) o URL a mano. Se puede subir hasta 15 s; más largos se rechazan.
+ * Se muestran como máximo 10 s: si el video dura más, aparece el selector de tramo ("recorte virtual").
  */
 export function VideoField({
   name,
@@ -58,22 +61,26 @@ export function VideoField({
   );
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState("");
-  const [localDuration, setLocalDuration] = useState<number | null>(null);
   const preview = useRef<HTMLVideoElement>(null);
+  const fresh = useRef(false); // true si el video lo eligió la persona en esta sesión (no el que ya estaba guardado)
   const uploading = progress !== null;
-  const longBy = duration ?? localDuration;
-  const tooLong = longBy !== null && longBy > RECOMMENDED_MAX;
 
   useClipLoop(preview, range?.start ?? null, range?.end ?? null, !!value);
 
   function changeVideo(url: string) {
-    setLocalDuration(null);
+    fresh.current = true;
     setValue(url);
     setDuration(null);
     setRange(null); // se recalcula al cargar los metadatos del video nuevo
   }
 
   function onMeta(d: number) {
+    // Video nuevo (URL pegada) más largo que el máximo: se rechaza.
+    if (fresh.current && d > MAX_UPLOAD + TOLERANCE) {
+      setError(tooLongMessage(d));
+      changeVideo("");
+      return;
+    }
     setDuration(d);
     setRange((r) => r ?? { start: 0, end: Math.min(MAX_CLIP, d) });
   }
@@ -98,7 +105,8 @@ export function VideoField({
     if (!TYPES.includes(file.type)) return setError("Formato no soportado: subí un MP4 o WebM.");
     if (file.size > MAX_MB * 1024 * 1024) return setError(`Pesa demasiado: máximo ${MAX_MB} MB. Conviene comprimirlo.`);
 
-    setLocalDuration(await readDuration(file)); // el aviso aparece antes de subir
+    const d = await readDuration(file); // se valida antes de subir, para no gastar espacio
+    if (d !== null && d > MAX_UPLOAD + TOLERANCE) return setError(tooLongMessage(d));
     setProgress(0);
     try {
       const blob = await upload(`friktime/${file.name}`, file, {
@@ -136,7 +144,7 @@ export function VideoField({
         />
       )}
 
-      {value && range && duration != null && (
+      {value && range && duration != null && duration > MAX_CLIP + TOLERANCE && (
         <div className="mb-3 space-y-2 rounded border border-line p-3">
           <p className="text-xs uppercase tracking-widest text-muted">
             Tramo que se muestra:{" "}
@@ -170,13 +178,6 @@ export function VideoField({
             />
           </label>
         </div>
-      )}
-
-      {tooLong && (
-        <p role="alert" className="mb-3 rounded border border-amber-500/60 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
-          ⚠ Este video dura {sec(longBy)}. Conviene mantener los videos por debajo de {RECOMMENDED_MAX} segundos: el archivo se
-          descarga completo aunque solo se muestre el tramo elegido, y pesa de más en el celular y en tu cuota de almacenamiento.
-        </p>
       )}
 
       <div className="flex flex-wrap items-center gap-3">
@@ -219,8 +220,7 @@ export function VideoField({
       />
       {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
       <p className="mt-2 text-xs text-muted">
-        Ideal: vertical 9:16 y de menos de {RECOMMENDED_MAX} segundos. MP4 o WebM, hasta {MAX_MB} MB. Se reproduce sin sonido y en
-        loop; elegí qué tramo mostrar (máx. {MAX_CLIP} s).
+        Se puede subir hasta {MAX_UPLOAD} segundos, pero se muestran {MAX_CLIP}: si dura más, elegís qué tramo. Ideal vertical 9:16. MP4 o WebM, hasta {MAX_MB} MB. Se reproduce sin sonido y en loop.
       </p>
     </div>
   );

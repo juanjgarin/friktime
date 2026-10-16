@@ -9,6 +9,7 @@ import { requireAdmin, signIn, signOut } from "@/auth";
 import { getDb } from "@/db";
 import { about, films, members, messages, news } from "@/db/schema";
 import { slugify } from "@/lib/format";
+import { deleteUnusedBlobs } from "@/lib/blob";
 
 export type FormState = { error?: string } | undefined;
 
@@ -58,7 +59,7 @@ export async function logoutAction() {
 
 /* ---------- Películas ---------- */
 
-const MAX_CLIP_SECONDS = 15;
+const MAX_CLIP_SECONDS = 10.05; // 10 s (con tolerancia por los decimales)
 const optSeconds = z
   .string()
   .trim()
@@ -101,21 +102,26 @@ export async function saveFilm(id: number | null, _: FormState, formData: FormDa
   if (clip.videoStart !== null && clip.videoEnd !== null) {
     if (clip.videoEnd <= clip.videoStart) return { error: "El fin del tramo debe ser posterior al inicio" };
     if (clip.videoEnd - clip.videoStart > MAX_CLIP_SECONDS)
-      return { error: `El tramo del video no puede superar ${MAX_CLIP_SECONDS} segundos` };
+      return { error: "El tramo del video no puede superar 10 segundos" };
   }
   const values = { ...film, ...clip, featured: formData.get("featured") === "on" };
   const db = getDb();
+  const [old] = id ? await db.select().from(films).where(eq(films.id, id)) : [];
 
   if (id) await db.update(films).set(values).where(eq(films.id, id));
   else await db.insert(films).values({ ...values, slug: await uniqueSlug(films, values.title) });
 
+  await deleteUnusedBlobs([old?.posterUrl, old?.bannerUrl, old?.videoUrl]);
   refresh();
   redirect("/admin/peliculas");
 }
 
 export async function deleteFilm(id: number) {
   await requireAdmin();
-  await getDb().delete(films).where(eq(films.id, id));
+  const db = getDb();
+  const [old] = await db.select().from(films).where(eq(films.id, id));
+  await db.delete(films).where(eq(films.id, id));
+  await deleteUnusedBlobs([old?.posterUrl, old?.bannerUrl, old?.videoUrl]);
   refresh();
   redirect("/admin/peliculas");
 }
@@ -147,17 +153,22 @@ export async function saveNews(id: number | null, _: FormState, formData: FormDa
   if (!parsed.success) return fail(parsed.error);
   const values = { ...parsed.data, published: formData.get("published") === "on" };
   const db = getDb();
+  const [old] = id ? await db.select().from(news).where(eq(news.id, id)) : [];
 
   if (id) await db.update(news).set(values).where(eq(news.id, id));
   else await db.insert(news).values({ ...values, slug: await uniqueSlug(news, values.title) });
 
+  await deleteUnusedBlobs([old?.imageUrl]);
   refresh();
   redirect("/admin/novedades");
 }
 
 export async function deleteNews(id: number) {
   await requireAdmin();
-  await getDb().delete(news).where(eq(news.id, id));
+  const db = getDb();
+  const [old] = await db.select().from(news).where(eq(news.id, id));
+  await db.delete(news).where(eq(news.id, id));
+  await deleteUnusedBlobs([old?.imageUrl]);
   refresh();
   redirect("/admin/novedades");
 }
@@ -181,10 +192,13 @@ export async function saveAbout(_: FormState, formData: FormData): Promise<FormS
   await requireAdmin();
   const parsed = aboutSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return fail(parsed.error);
-  await getDb()
+  const db = getDb();
+  const [old] = await db.select().from(about).where(eq(about.id, 1));
+  await db
     .insert(about)
     .values({ id: 1, ...parsed.data })
     .onConflictDoUpdate({ target: about.id, set: parsed.data });
+  await deleteUnusedBlobs([old?.imageUrl]);
   refresh();
   return undefined;
 }
@@ -235,6 +249,7 @@ export async function saveMember(id: number | null, _: FormState, formData: Form
   const parsed = memberSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return fail(parsed.error);
   const db = getDb();
+  const [old] = id ? await db.select().from(members).where(eq(members.id, id)) : [];
 
   if (id) await db.update(members).set(parsed.data).where(eq(members.id, id));
   else {
@@ -242,13 +257,17 @@ export async function saveMember(id: number | null, _: FormState, formData: Form
     await db.insert(members).values({ ...parsed.data, sortOrder: (m ?? -1) + 1 });
   }
 
+  await deleteUnusedBlobs([old?.photoUrl]);
   refresh();
   redirect("/admin/nosotros");
 }
 
 export async function deleteMember(id: number) {
   await requireAdmin();
-  await getDb().delete(members).where(eq(members.id, id));
+  const db = getDb();
+  const [old] = await db.select().from(members).where(eq(members.id, id));
+  await db.delete(members).where(eq(members.id, id));
+  await deleteUnusedBlobs([old?.photoUrl]);
   refresh();
   redirect("/admin/nosotros");
 }
@@ -272,10 +291,13 @@ export async function saveLogo(_: FormState, formData: FormData): Promise<FormSt
   await requireAdmin();
   const parsed = z.object({ logoUrl: url }).safeParse(Object.fromEntries(formData));
   if (!parsed.success) return fail(parsed.error);
-  await getDb()
+  const db = getDb();
+  const [old] = await db.select().from(about).where(eq(about.id, 1));
+  await db
     .insert(about)
     .values({ id: 1, ...parsed.data })
     .onConflictDoUpdate({ target: about.id, set: parsed.data });
+  await deleteUnusedBlobs([old?.logoUrl]);
   refresh();
   return undefined;
 }
