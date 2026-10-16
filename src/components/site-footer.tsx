@@ -36,9 +36,19 @@ export async function SiteFooter({ logo }: { logo: string }) {
           </Link>
         </div>
       </div>
-      <p className="border-t border-line py-4 text-center text-xs text-muted">
-        © {new Date().getFullYear()} Friktime. Todos los derechos reservados.
-      </p>
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 border-t border-line px-4 py-4 text-xs text-muted">
+        <p>© {new Date().getFullYear()} Friktime. Todos los derechos reservados.</p>
+        <a
+          href="https://synclear.com.ar"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 opacity-50 transition hover:opacity-100"
+        >
+          Powered by
+          {/* El logo es oscuro: se pasa a blanco para que se lea sobre el fondo negro, sin recuadro. */}
+          <Img src="/synclear-logo.webp" alt="Synclear" className="h-5 w-auto brightness-0 invert" />
+        </a>
+      </div>
     </footer>
   );
 }
